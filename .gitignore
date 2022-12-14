@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Google service account token
+service_account_token.json
+
+# MongoDB
+**/db
+
+# Other logging
+*.log.*

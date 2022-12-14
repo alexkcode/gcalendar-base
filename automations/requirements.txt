@@ -1,0 +1,10 @@
+flask
+APScheduler
+Flask-APScheduler
+python-dotenv
+pandas
+google
+google-auth
+google-auth-oauthlib
+google-api-python-client
+pymongo
