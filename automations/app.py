@@ -117,7 +117,7 @@ def download_calendar(calendar_id):
         app.logger.warning("STARTING GOOGLE CALENDAR DOWNLOAD")
         with app.app_context():
             calw = get_calw()
-            calw.get_events(calendar_id)
+            calw.upsert_all_events(calendar_id)
     except Exception as e:
         app.logger.error("GOOGLE CALENDAR DOWNLOAD FAILED at {0}".format(datetime.now()))
         raise(e)

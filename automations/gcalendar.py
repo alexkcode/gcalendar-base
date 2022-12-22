@@ -62,12 +62,14 @@ class CalendarWrapper(object):
             if not page_token:
                 break
             
-    def get_events(self, id):
+    def upsert_event(self, id, page_token=None):
+        pass
+            
+    def upsert_all_events(self, id):
         page_token = None
         while True:
             events = self.service.events().list(calendarId=id, pageToken=page_token).execute()
             for event in events['items']:
-                # self.db.events.insert_one(event)
                 ret = self.db.events.find_one_and_replace(
                     {
                         'updated': {'$eq': str(event['updated'])},
@@ -82,25 +84,10 @@ class CalendarWrapper(object):
                     ret['summary'],
                     ret['description']
                 ))
-                # try:
-                #     event['updated'] = str(event['updated'])
-                #     event['summary'] = str(event['summary'])
-                #     self.db.events.insert_one(event)
-                # except pymongo.errors.DuplicateKeyError as e:
-                #     duplicate_warning = "Existing event found, replacing: "
-                #     self.db.events.find_one_and_replace(
-                #         {
-                #             'updated': {'$eq': str(event['updated'])},
-                #             'summary': {'$eq': str(event['summary'])}
-                #         }, 
-                #         event
-                #     )
-                #     app.logger.warning("{0} {1} {2}".format(duplicate_warning,
-                #                                             event['updated'],
-                #                                             event['summary']))
             page_token = events.get('nextPageToken')
             if not page_token:
                 break
+        app.logger.warning("Events saved successfully to DB at {0}".format(datetime.datetime.now()))
 
     def get_calendar(self):
         try:
