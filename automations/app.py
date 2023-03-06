@@ -62,11 +62,6 @@ def get_scheduler():
         g.scheduler = BackgroundScheduler()
     return g.scheduler
 
-def get_follower_job_queue():
-    if not 'follower_job_queue' in g:
-        g.follower_job_queue = Queue()
-    return g.follower_job_queue
-
 def get_mongo_db():
     if not 'db' in g:
         # these parameters are fixed in the docker-compose

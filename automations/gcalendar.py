@@ -29,10 +29,14 @@ class CalendarWrapper(object):
             'https://www.googleapis.com/auth/drive'
         ]
         
-        if os.path.exists(self.cred_location) and not self.creds:
+        if os.path.exists(self.cred_location):
             self.creds = Credentials.from_service_account_file(self.cred_location, scopes=self.scopes)
+            app.logger.warning("Created credentials: ", self.creds)
             
         self.service = build('calendar', 'v3', credentials=self.creds)
+        # self.service = build('calendar', 
+        #                      'v3', 
+        #                      credentials=Credentials.from_service_account_file("service_account_token.json", scopes=self.scopes))
 
     def create_creds(self):
         scopes = self.scopes
@@ -41,10 +45,12 @@ class CalendarWrapper(object):
         return self.creds
     
     def init_service(self):
-        creds = self.create_creds()
+        self.creds = self.create_creds()
+        app.logger.info("Created credentials: ", self.creds)
         self.service = build('calendar', 'v3', credentials=self.creds)
+        app.logger.info("Created service: ", self.service)
         
-    def insert_calendar(self, id="uicpdshared@gmail.com"):
+    def insert_calendar(self, id):
         calendar_list_entry = {
             'id': id
         }
@@ -66,6 +72,9 @@ class CalendarWrapper(object):
         pass
             
     def upsert_all_events(self, id):
+        if not self.creds:
+            self.init_service()
+        
         page_token = None
         while True:
             events = self.service.events().list(calendarId=id, pageToken=page_token).execute()
